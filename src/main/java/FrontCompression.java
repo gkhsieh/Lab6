@@ -61,7 +61,7 @@ public class FrontCompression {
             addend = Integer.toString(prefixLength) + " " + split[i+1].substring(prefixLength) + "\n";
             compressed += addend;
         }
-
+        System.out.println(compressed.substring(0, 20));
         return compressed;
     }
 
@@ -86,33 +86,46 @@ public class FrontCompression {
          */
         //split the input into a String array by space
         String[] split = corpus.split("\\s+");
+        //String[] split = corpus.split("\n");
         String[] dictionary = new String[split.length / 2];
         int[] prefixLengths = new int[split.length / 2];
-
+        /*int c = 0, tprefix;
+        String tsuffix;
+        for (int i = 0; i < split.length; ++i) {
+            tprefix = Integer.parseInt(split[i].split(" ")[0]);
+            tsuffix = split[i].split(" ")[1];
+            dictionary[c] = tsuffix;
+            prefixLengths[c++] = tprefix;
+        }*/
         for (int i = 0; i < split.length / 2; i++) {
             prefixLengths[i] = Integer.parseInt(split[i*2]);
             dictionary[i] = split[i*2+1];
         }
 
         String decompressed = dictionary[0] + "\n", prefix = "";
-        String originalPrefix = dictionary[0].substring(0, prefixLengths[1]);
+        int ptr = 0;
+        //String originalPrefix = dictionary[0].substring(0, prefixLengths[1]);
 
         //iterate through pairs to compare and decompress
         for (int i = 1; i < dictionary.length; i++) {
 
-            //use original prefix if prefixLength is not 0
+            /*//use original prefix if prefixLength is not 0
             if (prefixLengths[i] != 0) {
                 prefix = originalPrefix;
-                }
+            }
 
             else {
-                prefix = dictionary[i-1].substring(0, prefixLengths[i]);
+                prefix = decompressed.substring(ptr, ptr + prefixLengths[i]);
                 originalPrefix = prefix;
-                }
+            }
 
             decompressed += prefix + dictionary[i] + "\n";
+            */
+            prefix = decompressed.substring(ptr, ptr + prefixLengths[i]);
+            ptr = decompressed.length();
+            decompressed += prefix + dictionary[i] + "\n";
         }
-
+        System.out.println(decompressed.substring(0, 20));
         return decompressed;
     }
 
