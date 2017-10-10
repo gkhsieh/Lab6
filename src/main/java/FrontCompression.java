@@ -44,8 +44,25 @@ public class FrontCompression {
         /*
          * Complete this function.
          */
+        //split the input into a String array by space
+        String[] split = corpus.split("\\r?\\n");
 
-        return "";
+        //first part of compressed string is always 0 + first word
+        String compressed = "0 " + split[0] + "\n", addend = "";
+        int prefixLength = 0;
+
+        //iterate through pairs to compare and compress
+        for (int i = 0; i < split.length - 1; i++) {
+
+            //finds length of common prefix
+            prefixLength = longestPrefix(split[i], split[i+1]);
+
+            //concatenates prefixLength and word without prefix
+            addend = Integer.toString(prefixLength) + " " + split[i+1].substring(prefixLength) + "\n";
+            compressed += addend;
+        }
+
+        return compressed;
     }
 
     /**
@@ -67,8 +84,36 @@ public class FrontCompression {
         /*
          * Complete this function.
          */
+        //split the input into a String array by space
+        String[] split = corpus.split("\\s+");
+        String[] dictionary = new String[split.length / 2];
+        int[] prefixLengths = new int[split.length / 2];
 
-        return "";
+        for (int i = 0; i < split.length / 2; i++) {
+            prefixLengths[i] = Integer.parseInt(split[i*2]);
+            dictionary[i] = split[i*2+1];
+        }
+
+        String decompressed = dictionary[0] + "\n", prefix = "";
+        String originalPrefix = dictionary[0].substring(0, prefixLengths[1]);
+
+        //iterate through pairs to compare and decompress
+        for (int i = 1; i < dictionary.length; i++) {
+
+            //use original prefix if prefixLength is not 0
+            if (prefixLengths[i] != 0) {
+                prefix = originalPrefix;
+                }
+
+            else {
+                prefix = dictionary[i-1].substring(0, prefixLengths[i]);
+                originalPrefix = prefix;
+                }
+
+            decompressed += prefix + dictionary[i] + "\n";
+        }
+
+        return decompressed;
     }
 
     /**
@@ -82,7 +127,22 @@ public class FrontCompression {
         /*
          * Complete this function.
          */
-        return 0;
+
+        //initialize some variables
+        int count = 0, currentIndex = 0, maxIndex;
+        boolean charIsDifferent = false;
+
+        //finds length of the shorter string
+        if (firstString.length() <= secondString.length()) { maxIndex = firstString.length(); }
+        else { maxIndex = secondString.length(); }
+
+        //increments count until chars are different or currentIndex reaches maxIndex
+        while (currentIndex < maxIndex && !charIsDifferent) {
+            if (firstString.charAt(currentIndex) != secondString.charAt(currentIndex)) { charIsDifferent = true; }
+            else { count++; currentIndex++; }
+            }
+
+        return count;
     }
 
     /**
@@ -94,7 +154,6 @@ public class FrontCompression {
      */
     public static void main(final String[] unused)
             throws URISyntaxException, FileNotFoundException {
-
         /*
          * The magic 6 lines that you need in Java to read stuff from a file.
          */
